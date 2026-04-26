@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Clonemax — Face Cloning App | Reference & Live Camera</title>
+    <meta name="description" content="Clonemax Face Cloning Application – Upload reference images, capture live camera feed, extract frames, and prepare for real-time face cloning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="app-header" id="app-header">
+        <div class="header-inner">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <circle cx="14" cy="10" r="5" stroke="url(#logo-grad)" stroke-width="2" fill="none"/>
+                        <path d="M5 24c0-5 4-9 9-9s9 4 9 9" stroke="url(#logo-grad)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <circle cx="20" cy="8" r="3" stroke="url(#logo-grad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+                        <defs>
+                            <linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28">
+                                <stop offset="0%" stop-color="#818cf8"/>
+                                <stop offset="100%" stop-color="#c084fc"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">Clonemax</span>
+                <span class="logo-badge">v1.0</span>
+            </div>
+            <div class="header-right">
+                <div class="header-status" id="modelStatus">
+                    <span class="status-dot loading"></span>
+                    <span class="status-label">Loading Models…</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Module Tabs -->
+    <nav class="module-tabs" id="moduleTabs">
+        <div class="tabs-inner">
+            <button class="tab-btn active" data-module="reference" id="tabReference">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 13l4-3 2 1.5 3-4 5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Reference Image
+            </button>
+            <button class="tab-btn" data-module="camera" id="tabCamera">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="4" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M6 4V3a1 1 0 011-1h4a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.5"/></svg>
+                Live Camera
+            </button>
+            <button class="tab-btn" data-module="detection" id="tabDetection">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="6" r="0.8" fill="currentColor"/><circle cx="10.5" cy="6" r="0.8" fill="currentColor"/></svg>
+                Detection
+            </button>
+            <button class="tab-btn" data-module="swapping" id="tabSwapping">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 7a4 4 0 018 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 7l2-2m0 0l-2-2m2 2H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 11l-2 2m0 0l2 2m-2-2h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Swap Engine
+            </button>
+            <button class="tab-btn" data-module="enhancer" id="tabEnhancer">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v2m0 8v2M3 9h2m8 0h2m-2.5 4.5l1.5 1.5m-11-11l1.5 1.5m7 0l1.5-1.5M5.5 13.5l1.5-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+                Enhancer
+            </button>
+            <button class="tab-btn" data-module="mask" id="tabMask">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 6c0-1.5 1.5-3 5-3s5 1.5 5 3v5c0 2-2 4-5 4s-5-2-5-4V6z" stroke="currentColor" stroke-width="1.5"/><path d="M6 7h1m4 0h1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Mask
+            </button>
+            <button class="tab-btn" data-module="performance" id="tabPerformance">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 16a7 7 0 100-14 7 7 0 000 14z" stroke="currentColor" stroke-width="1.5"/><path d="M9 4v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Performance
+            </button>
+            <button class="tab-btn" data-module="audio" id="tabAudio">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v8m-3-5v2m6-2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 14s1 1 3 1 3-1 3-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Audio
+            </button>
+            <button class="tab-btn" data-module="multiface" id="tabMultiFace">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M12 10a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5"/><path d="M6 13a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5"/><path d="M14 16v-1a3 3 0 00-3-3H7a3 3 0 00-3 3v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Multi-Face
+            </button>
+            <div class="tab-indicator" id="tabIndicator"></div>
+        </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 1: Reference Image Input                               -->
+    <!-- ============================================================ -->
+    <section class="module-panel active" id="moduleReference">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">🎭</span> Face Reference Input</h1>
+            <p class="hero-subtitle">Upload a clear face photo to detect, validate, and extract facial landmarks for real-time cloning.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="main-grid">
+                <!-- Upload & Preview -->
+                <div class="card card-upload" id="upload-card">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📤</span> Upload Reference Image</h2>
+                    </div>
+                    <div id="uploadArea" class="upload-area" tabindex="0" role="button" aria-label="Click or drag and drop an image to upload">
+                        <div class="upload-icon-wrap">
+                            <svg class="upload-icon" width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="18" cy="22" r="4" stroke="currentColor" stroke-width="2"/>
+                                <path d="M6 34l10-8 6 4 8-10 12 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <p class="upload-label">Click or Drag & Drop</p>
+                        <p class="upload-hint">JPG, PNG, WEBP, BMP — Max 10 MB</p>
+                        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/bmp" aria-hidden="true">
+                    </div>
+
+                    <div class="preview-wrapper" id="previewWrapper" style="display:none;">
+                        <div class="preview-container" id="previewContainer">
+                            <img id="previewImage" class="preview-image" alt="Uploaded face preview">
+                            <canvas id="landmarksCanvas" class="landmarks-canvas"></canvas>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn btn-ghost" id="resetBtn" type="button">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1011.46-2.46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 2V5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(5,-1)"/></svg>
+                                Reset
+                            </button>
+                            <button class="btn btn-primary" id="reanalyzeBtn" type="button">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Re-Analyze
+                            </button>
+                            <button class="btn btn-success" id="useAsRefBtn" type="button">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8h8M8 4v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                Use as Reference
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+                        <div class="loader-ring"></div>
+                        <p class="loader-text" id="loaderText">Analyzing face…</p>
+                    </div>
+                </div>
+
+                <!-- Validation Results -->
+                <div class="card card-validation" id="validation-card">
+                    <div class="card-header">
+                        <h2><span class="card-icon">✅</span> Face Quality Validation</h2>
+                    </div>
+                    <div id="validationResults" class="validation-body">
+                        <div class="empty-state" id="emptyState">
+                            <div class="empty-icon">🔍</div>
+                            <p>Upload an image to begin face validation…</p>
+                        </div>
+                    </div>
+                    <div id="metricsPanel" class="metrics-panel" style="display:none;">
+                        <h3 class="section-title">📊 Face Metrics</h3>
+                        <div class="metrics-grid" id="metricsGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="card card-detail" id="detailCard" style="display:none;">
+                <div class="card-header">
+                    <h2><span class="card-icon">🔬</span> Detailed Analysis</h2>
+                </div>
+                <div id="detailBody" class="detail-body"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 2: Live Camera Capture                                 -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="moduleCamera">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">🎥</span> Live Camera Capture</h1>
+            <p class="hero-subtitle">Real-time webcam feed with frame extraction, recording, and face detection for cloning.</p>
+        </div>
+
+        <div class="main-container">
+            <!-- Reference chip (visible when reference is set) -->
+            <div class="ref-chip" id="refChip" style="display:none;">
+                <img id="refChipThumb" class="ref-chip-thumb" alt="Reference thumbnail">
+                <span class="ref-chip-label">Reference loaded</span>
+                <button class="ref-chip-clear" id="refChipClear" title="Clear reference">✕</button>
+            </div>
+
+            <div class="main-grid">
+                <!-- Live Camera Feed -->
+                <div class="card card-camera">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📹</span> Live Camera Feed</h2>
+                        <div class="cam-live-badge" id="camLiveBadge" style="display:none;">
+                            <span class="live-dot"></span> LIVE
+                        </div>
+                    </div>
+
+                    <div class="video-container" id="videoContainer">
+                        <video id="videoFeed" autoplay playsinline muted></video>
+                        <canvas id="cameraOverlay" class="camera-overlay-canvas"></canvas>
+                        <div class="video-placeholder" id="videoPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                <rect x="4" y="12" width="56" height="40" rx="4" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                                <circle cx="32" cy="32" r="10" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                                <path d="M32 22v-6m0 32v-6m-10-10h-6m32 0h-6" stroke="currentColor" stroke-width="1.5" opacity="0.2" stroke-linecap="round"/>
+                            </svg>
+                            <p>Camera feed will appear here</p>
+                        </div>
+                    </div>
+
+                    <!-- Camera Controls -->
+                    <div class="cam-controls" id="camControls">
+                        <div class="cam-ctrl-row">
+                            <div class="cam-ctrl-group">
+                                <label for="cameraSelect">📷 Camera</label>
+                                <select id="cameraSelect"><option value="">Detecting…</option></select>
+                            </div>
+                            <div class="cam-ctrl-group">
+                                <label for="fpsLimit">⚡ FPS Limit</label>
+                                <select id="fpsLimit">
+                                    <option value="0">Unlimited</option>
+                                    <option value="60">60</option>
+                                    <option value="30" selected>30</option>
+                                    <option value="24">24</option>
+                                    <option value="15">15</option>
+                                    <option value="10">10</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <div class="cam-ctrl-group">
+                                <label for="resolutionSelect">📐 Resolution</label>
+                                <select id="resolutionSelect">
+                                    <option value="320x240">320×240</option>
+                                    <option value="640x480" selected>640×480</option>
+                                    <option value="800x600">800×600</option>
+                                    <option value="1280x720">1280×720 HD</option>
+                                    <option value="1920x1080">1920×1080 FHD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="cam-ctrl-row cam-btn-row">
+                            <button class="btn btn-primary btn-cam" id="startCameraBtn">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polygon points="4,2 14,8 4,14" fill="currentColor"/></svg>
+                                Start Camera
+                            </button>
+                            <button class="btn btn-danger btn-cam" id="stopCameraBtn" disabled>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="3" width="10" height="10" rx="1.5" fill="currentColor"/></svg>
+                                Stop
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="cam-stats" id="camStats">
+                        <div class="cam-stat">
+                            <span class="cam-stat-value" id="fpsValue">0</span>
+                            <span class="cam-stat-label">FPS</span>
+                        </div>
+                        <div class="cam-stat">
+                            <span class="cam-stat-value" id="resolutionValue">—</span>
+                            <span class="cam-stat-label">Resolution</span>
+                        </div>
+                        <div class="cam-stat">
+                            <span class="cam-stat-value" id="frameCount">0</span>
+                            <span class="cam-stat-label">Frames</span>
+                        </div>
+                        <div class="cam-stat">
+                            <span class="cam-stat-value" id="latencyValue">—</span>
+                            <span class="cam-stat-label">Latency</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings & Frame Extraction -->
+                <div class="card card-settings">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Settings & Frame Extraction</h2>
+                    </div>
+
+                    <!-- Resolution Presets -->
+                    <div class="settings-section">
+                        <h3 class="section-title">📐 Resolution Presets</h3>
+                        <div class="preset-grid" id="presetGrid">
+                            <button class="preset-chip" data-w="320" data-h="240">Low<span>320×240</span></button>
+                            <button class="preset-chip active" data-w="640" data-h="480">SD<span>640×480</span></button>
+                            <button class="preset-chip" data-w="1280" data-h="720">HD<span>1280×720</span></button>
+                            <button class="preset-chip" data-w="1920" data-h="1080">FHD<span>1920×1080</span></button>
+                        </div>
+                    </div>
+
+                    <!-- Frame Extraction -->
+                    <div class="settings-section">
+                        <h3 class="section-title">📸 Frame Extraction</h3>
+                        <div class="extract-btns">
+                            <button class="btn btn-primary" id="extractFrameBtn" disabled>🎯 Capture Frame</button>
+                            <button class="btn btn-toggle" id="autoExtractToggle" disabled>
+                                <span class="toggle-dot"></span> Auto Extract
+                            </button>
+                            <button class="btn btn-ghost" id="clearFramesBtn">🗑️ Clear</button>
+                        </div>
+                        <div class="frames-gallery" id="framesGallery">
+                            <div class="frames-empty">No frames captured yet</div>
+                        </div>
+                    </div>
+
+                    <!-- Recording -->
+                    <div class="settings-section">
+                        <h3 class="section-title">🎬 Recording</h3>
+                        <div class="extract-btns">
+                            <button class="btn btn-record" id="startRecordingBtn" disabled>
+                                <span class="rec-dot"></span> Record
+                            </button>
+                            <button class="btn btn-ghost" id="stopRecordingBtn" disabled>⏹ Stop</button>
+                            <button class="btn btn-ghost" id="downloadFramesBtn" disabled>💾 Download ZIP</button>
+                        </div>
+                        <div class="recording-status" id="recordingStatus"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error container -->
+            <div id="camErrorContainer" class="cam-error-container"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 3: Face Detection & Landmark Extraction                -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="moduleDetection">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">🔍</span> Face Detection & Landmarks</h1>
+            <p class="hero-subtitle">Real-time face detection with 68 / 468-point landmark extraction and multi-face support.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="main-grid">
+                <!-- Live Detection Feed -->
+                <div class="card card-detect-feed">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📹</span> Live Detection Feed</h2>
+                        <div class="cam-live-badge" id="detLiveBadge" style="display:none;"><span class="live-dot"></span> DETECTING</div>
+                    </div>
+
+                    <div class="video-container" id="detVideoContainer">
+                        <video id="detVideoFeed" autoplay playsinline muted></video>
+                        <canvas id="detLandmarkCanvas" class="camera-overlay-canvas"></canvas>
+                        <div class="video-placeholder" id="detVideoPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="24" r="12" stroke="currentColor" stroke-width="2" opacity="0.3"/><path d="M12 52c0-11 9-20 20-20s20 9 20 20" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/></svg>
+                            <p>Start detection to see live landmarks</p>
+                        </div>
+                    </div>
+
+                    <!-- Detection Controls -->
+                    <div class="cam-controls">
+                        <div class="cam-ctrl-row">
+                            <div class="cam-ctrl-group">
+                                <label for="detCameraSelect">📷 Camera</label>
+                                <select id="detCameraSelect"><option value="">Detecting…</option></select>
+                            </div>
+                            <div class="cam-ctrl-group">
+                                <label for="detDetectorType">🎯 Detector</label>
+                                <select id="detDetectorType">
+                                    <option value="mediapipe">MediaPipe Face Mesh (468 pts)</option>
+                                    <option value="faceapi">Face-API.js (68 pts)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="cam-ctrl-row cam-btn-row">
+                            <button class="btn btn-primary btn-cam" id="detStartBtn">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polygon points="4,2 14,8 4,14" fill="currentColor"/></svg>
+                                Start Detection
+                            </button>
+                            <button class="btn btn-danger btn-cam" id="detStopBtn" disabled>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="3" width="10" height="10" rx="1.5" fill="currentColor"/></svg>
+                                Stop
+                            </button>
+                            <div class="det-mode-toggle">
+                                <button class="btn btn-mode active" id="detSingleMode">👤 Single</button>
+                                <button class="btn btn-mode" id="detMultiMode">👥 Multi</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detection Stats -->
+                    <div class="cam-stats">
+                        <div class="cam-stat"><span class="cam-stat-value" id="detFps">0</span><span class="cam-stat-label">Det. FPS</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="detFaces">0</span><span class="cam-stat-label">Faces</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="detLandmarks">0</span><span class="cam-stat-label">Pts / Face</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="detTime">0</span><span class="cam-stat-label">ms / Frame</span></div>
+                    </div>
+                </div>
+
+                <!-- Reference & Face List -->
+                <div class="card card-detect-info">
+                    <div class="card-header">
+                        <h2><span class="card-icon">🖼️</span> Reference Face Analysis</h2>
+                    </div>
+
+                    <div class="det-ref-area">
+                        <div class="det-ref-preview" id="detRefPreview">
+                            <img id="detRefImage" class="det-ref-img" alt="Reference" style="display:none;">
+                            <canvas id="detRefCanvas" class="det-ref-canvas"></canvas>
+                            <div class="det-ref-empty" id="detRefEmpty">No reference — upload via Module 1</div>
+                        </div>
+                        <div class="det-ref-actions">
+                            <button class="btn btn-ghost" id="detUploadRefBtn">📤 Upload</button>
+                            <button class="btn btn-primary" id="detAnalyzeRefBtn" disabled>🔍 Analyze</button>
+                            <button class="btn btn-ghost" id="detClearRefBtn">🗑️ Clear</button>
+                        </div>
+                        <div class="det-ref-info" id="detRefInfo"></div>
+                    </div>
+
+                    <!-- Detected Face List -->
+                    <div class="settings-section">
+                        <h3 class="section-title">👥 Detected Faces</h3>
+                        <div class="det-face-list" id="detFaceList">
+                            <div class="frames-empty">No faces detected yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Landmark Details Panel -->
+            <div class="card card-detail" id="detLandmarkCard" style="display:none;">
+                <div class="card-header">
+                    <h2><span class="card-icon">📍</span> Landmark Details <span class="det-face-label" id="detFaceLabel"></span></h2>
+                </div>
+                <div class="det-landmark-metrics">
+                    <div class="cam-stat"><span class="cam-stat-value" id="detEyeDist">—</span><span class="cam-stat-label">Eye Distance</span></div>
+                    <div class="cam-stat"><span class="cam-stat-value" id="detFaceW">—</span><span class="cam-stat-label">Face Width</span></div>
+                    <div class="cam-stat"><span class="cam-stat-value" id="detFaceH">—</span><span class="cam-stat-label">Face Height</span></div>
+                    <div class="cam-stat"><span class="cam-stat-value" id="detHeadRot">—</span><span class="cam-stat-label">Head Tilt °</span></div>
+                </div>
+                <div class="det-coords-scroll" id="detCoordsScroll"></div>
+            </div>
+
+            <!-- Performance Indicator -->
+            <div class="det-perf-badge" id="detPerfBadge">⚡ Ready</div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 4: Face Swapping / Cloning Engine                      -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="moduleSwapping">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">🔄</span> Face Swap Engine</h1>
+            <p class="hero-subtitle">Real-time face warping with Delaunay triangulation, affine transforms & seamless blending.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="swap-grid">
+                <!-- Live Cloned Output -->
+                <div class="card card-swap-output">
+                    <div class="card-header">
+                        <h2><span class="card-icon">🎭</span> Live Cloned Output</h2>
+                        <div class="cam-live-badge" id="swapLiveBadge" style="display:none;"><span class="live-dot"></span> CLONING</div>
+                    </div>
+                    <div class="video-container" id="swapVideoContainer">
+                        <canvas id="swapOutputCanvas"></canvas>
+                        <div class="video-placeholder" id="swapPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><path d="M20 24a8 8 0 0116 0" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/><path d="M44 40a8 8 0 01-16 0" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/><path d="M36 24l4-4m0 0l-4-4m4 4H24" stroke="currentColor" stroke-width="1.5" opacity="0.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 40l-4 4m0 0l4 4m-4-4h16" stroke="currentColor" stroke-width="1.5" opacity="0.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <p>Start cloning to see output</p>
+                        </div>
+                    </div>
+                    <div class="cam-stats" id="swapStats">
+                        <div class="cam-stat"><span class="cam-stat-value" id="swapFps">0</span><span class="cam-stat-label">Swap FPS</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="swapTriangles">0</span><span class="cam-stat-label">Triangles</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="swapTime">0</span><span class="cam-stat-label">ms / Swap</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="swapBlend">Alpha</span><span class="cam-stat-label">Blend Mode</span></div>
+                    </div>
+                </div>
+
+                <!-- Reference Face -->
+                <div class="card card-swap-ref">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📸</span> Reference Face</h2>
+                    </div>
+                    <div class="swap-ref-preview">
+                        <canvas id="swapRefCanvas"></canvas>
+                        <div class="det-ref-empty" id="swapRefEmpty">No reference — upload or use Module 1</div>
+                    </div>
+                    <div class="det-ref-actions">
+                        <button class="btn btn-ghost" id="swapUploadRefBtn">📤 Upload</button>
+                        <button class="btn btn-primary" id="swapDetectRefBtn" disabled>🔍 Detect Face</button>
+                        <button class="btn btn-ghost" id="swapClearRefBtn">🗑️ Clear</button>
+                    </div>
+                    <div class="det-ref-info" id="swapRefInfo"></div>
+                </div>
+
+                <!-- Cloning Controls -->
+                <div class="card card-swap-ctrl">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Cloning Controls</h2>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎨 Blend Mode</h3>
+                        <div class="swap-blend-grid" id="swapBlendGrid">
+                            <button class="preset-chip active" data-blend="alpha">Alpha<span>Smooth mix</span></button>
+                            <button class="preset-chip" data-blend="poisson">Poisson<span>Seamless</span></button>
+                            <button class="preset-chip" data-blend="feather">Feather<span>Soft edge</span></button>
+                            <button class="preset-chip" data-blend="linear">Linear<span>Direct</span></button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎚️ Adjustments</h3>
+                        <div class="swap-slider-group">
+                            <label>🎭 Opacity</label>
+                            <input type="range" id="swapOpacity" min="0" max="100" value="95" class="swap-slider">
+                            <span class="swap-slider-val" id="swapOpacityVal">95%</span>
+                        </div>
+                        <div class="swap-slider-group">
+                            <label>🔪 Sharpness</label>
+                            <input type="range" id="swapSharpness" min="0" max="200" value="100" class="swap-slider">
+                            <span class="swap-slider-val" id="swapSharpnessVal">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🌈 Color Transfer</h3>
+                        <div class="cam-ctrl-group">
+                            <select id="swapColorTransfer">
+                                <option value="none">None</option>
+                                <option value="luminance" selected>Luminance Match</option>
+                                <option value="reinhard">Reinhard (LAB)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section swap-action-section">
+                        <div class="extract-btns">
+                            <button class="btn btn-primary btn-cam" id="swapStartBtn">▶️ Start Cloning</button>
+                            <button class="btn btn-danger btn-cam" id="swapStopBtn" disabled>⏹ Stop</button>
+                            <button class="btn btn-ghost" id="swapCaptureBtn">📸 Capture</button>
+                        </div>
+                        <div class="recording-status" id="swapStatusMsg"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance badge -->
+            <div class="det-perf-badge" id="swapPerfBadge" style="display:none;">⚡ Ready</div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 5: Face Enhancer Engine                                -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="moduleEnhancer">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">✨</span> Face Enhancer Engine</h1>
+            <p class="hero-subtitle">GPEN & GFPGAN-style enhancement, real-time sharpness, and color boost.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="swap-grid">
+                <!-- Enhanced Output -->
+                <div class="card card-swap-output">
+                    <div class="card-header">
+                        <h2><span class="card-icon">🎨</span> Enhanced Output</h2>
+                    </div>
+                    <div class="video-container">
+                        <canvas id="enhOutputCanvas"></canvas>
+                        <div class="video-placeholder" id="enhPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><path d="M20 24a8 8 0 0116 0" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/><path d="M36 24l4-4m0 0l-4-4m4 4H24" stroke="currentColor" stroke-width="1.5" opacity="0.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <p>Upload a face to begin</p>
+                        </div>
+                    </div>
+                    <div class="cam-stats">
+                        <div class="cam-stat"><span class="cam-stat-value" id="enhTime">0</span><span class="cam-stat-label">ms / Process</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="enhQuality">0</span><span class="cam-stat-label">Quality Score</span></div>
+                    </div>
+                </div>
+
+                <!-- Source Face -->
+                <div class="card card-swap-ref">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📸</span> Source Face</h2>
+                    </div>
+                    <div class="swap-ref-preview">
+                        <canvas id="enhSourceCanvas"></canvas>
+                        <div class="det-ref-empty" id="enhSourceEmpty">No source image</div>
+                    </div>
+                    <div class="det-ref-actions" style="margin-top:10px;">
+                        <button class="btn btn-primary" id="enhUploadBtn">📤 Upload Face</button>
+                        <button class="btn btn-ghost" id="enhCamBtn">📷 From Camera</button>
+                    </div>
+                    <div class="det-ref-info" id="enhSourceInfo" style="margin-top:5px;"></div>
+                </div>
+
+                <!-- Controls -->
+                <div class="card card-swap-ctrl">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Adjustments</h2>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎯 Enhancer Model</h3>
+                        <div class="cam-ctrl-group">
+                            <select id="enhModel">
+                                <option value="gpen_256">GPEN Enhancer 256</option>
+                                <option value="gpen_512">GPEN Enhancer 512</option>
+                                <option value="gfpgan">GFPGAN v1.3</option>
+                                <option value="codeformer">CodeFormer</option>
+                                <option value="real_esrgan">Real-ESRGAN</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎚️ Tuners</h3>
+                        <div class="swap-slider-group">
+                            <label>🔪 Sharpness</label>
+                            <input type="range" id="enhSharpness" min="0" max="200" value="100" class="swap-slider">
+                            <span class="swap-slider-val" id="enhSharpnessVal">100%</span>
+                        </div>
+                        <div class="swap-slider-group">
+                            <label>🔄 Denoise</label>
+                            <input type="range" id="enhDenoise" min="0" max="100" value="50" class="swap-slider">
+                            <span class="swap-slider-val" id="enhDenoiseVal">50%</span>
+                        </div>
+                        <div class="swap-slider-group">
+                            <label>🎨 Color Boost</label>
+                            <input type="range" id="enhColorBoost" min="0" max="100" value="60" class="swap-slider">
+                            <span class="swap-slider-val" id="enhColorBoostVal">60%</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <div class="cam-ctrl-group" style="flex:1">
+                                <label>Face Restor.</label>
+                                <select id="enhRestoration">
+                                    <option value="light">Light</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="strong">Strong</option>
+                                    <option value="extreme">Extreme</option>
+                                </select>
+                            </div>
+                            <div class="cam-ctrl-group" style="flex:1">
+                                <label>Upscale</label>
+                                <select id="enhUpscale">
+                                    <option value="1">1x</option>
+                                    <option value="2">2x</option>
+                                    <option value="4">4x</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section swap-action-section" style="border-top:none;">
+                        <div class="extract-btns">
+                            <button class="btn btn-primary btn-cam" id="enhApplyBtn">✨ Enhance</button>
+                            <button class="btn btn-ghost" id="enhAutoBtn">🔄 Auto</button>
+                        </div>
+                        <div style="width:100%; height:3px; background:rgba(255,255,255,0.1); margin-top:15px; border-radius:3px; overflow:hidden;">
+                            <div id="enhProgress" style="height:100%; width:0%; background:var(--accent-gradient); transition:width 0.2s ease;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Block -->
+            <div class="card" id="enhCompareCard" style="display:none; margin-top:20px;">
+                <div class="card-header">
+                    <h2><span class="card-icon">⚖️</span> Before vs After</h2>
+                    <div style="margin-left:auto;">
+                        <button class="btn btn-ghost btn-sm" id="enhCloseCompareBtn">Close</button>
+                        <button class="btn btn-primary btn-sm" id="enhDownloadBtn">💾 Download</button>
+                    </div>
+                </div>
+                <div class="enh-compare-container" id="enhCompareContainer">
+                    <canvas id="enhCompareSourceCanvas" class="enh-compare-img"></canvas>
+                    <div class="enh-compare-overlay" id="enhCompareOverlay">
+                        <canvas id="enhCompareTargetCanvas" class="enh-compare-img"></canvas>
+                    </div>
+                    <div class="enh-compare-handle" id="enhCompareHandle"></div>
+                </div>
+            </div>
+
+            <div class="det-perf-badge" id="enhPerfBadge" style="display:none;">⚡ Ready</div>
+        </div>
+    </section>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 6: Mask Options Module                                 -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="moduleMask">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">🎭</span> Mask Options Module</h1>
+            <p class="hero-subtitle">Mouth mask generation, real-time overlay visualization, and transparency tuning.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="main-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Live Feed with Mask -->
+                <div class="card card-swap-output">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📹</span> Live Feed with Mask</h2>
+                    </div>
+                    <div class="video-container" id="maskLiveContainer">
+                        <canvas id="maskLiveCanvas"></canvas>
+                        <div class="video-placeholder" id="maskPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><path d="M20 24a8 8 0 0116 0" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/><path d="M36 24l4-4m0 0l-4-4m4 4H24" stroke="currentColor" stroke-width="1.5" opacity="0.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <p>Starting Camera...</p>
+                        </div>
+                    </div>
+                    <div class="cam-stats">
+                        <div class="cam-stat"><span class="cam-stat-value" id="maskFaceCount">0</span><span class="cam-stat-label">Faces</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="maskStatusVal" style="color:var(--error);">Inactive</span><span class="cam-stat-label">Status</span></div>
+                        <div class="cam-stat"><span class="cam-stat-value" id="maskFps">0</span><span class="cam-stat-label">FPS</span></div>
+                    </div>
+                </div>
+
+                <!-- Mask Configuration -->
+                <div class="card card-swap-ctrl">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Configuration</h2>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎭 Core Options</h3>
+                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                            <button class="btn btn-ghost" id="maskToggleBtn" style="flex:1; border:1px solid var(--border-subtle);">🔴 Mask Disabled</button>
+                            <button class="btn btn-ghost" id="maskBoxBtn" style="flex:1; border:1px solid var(--border-subtle);">🔴 Box Hidden</button>
+                        </div>
+
+                        <div class="swap-slider-group">
+                            <label>💧 Opacity</label>
+                            <input type="range" id="maskAlpha" min="0" max="100" value="30" class="swap-slider">
+                            <span class="swap-slider-val" id="maskAlphaVal">30%</span>
+                        </div>
+                        <div class="swap-slider-group">
+                            <label>🔍 Smooth</label>
+                            <input type="range" id="maskSmooth" min="0" max="20" value="5" class="swap-slider">
+                            <span class="swap-slider-val" id="maskSmoothVal">5px</span>
+                        </div>
+                        <div class="swap-slider-group">
+                            <label>🎯 Detect</label>
+                            <input type="range" id="maskSens" min="0" max="100" value="50" class="swap-slider">
+                            <span class="swap-slider-val" id="maskSensVal">50%</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎨 Style & Color</h3>
+                        <div style="display:flex; gap:10px;">
+                            <div class="cam-ctrl-group" style="flex:1;">
+                                <label>Style</label>
+                                <select id="maskStyleMode">
+                                    <option value="solid">Solid Fill</option>
+                                    <option value="outline" selected>Outline Only</option>
+                                    <option value="gradient">Gradient Fill</option>
+                                    <option value="pattern">Pattern/Texture</option>
+                                </select>
+                            </div>
+                            <div class="cam-ctrl-group" style="flex:1;">
+                                <label>Color</label>
+                                <select id="maskColorMode">
+                                    <option value="red">🔴 Red</option>
+                                    <option value="blue" selected>🔵 Blue</option>
+                                    <option value="green">🟢 Green</option>
+                                    <option value="yellow">🟡 Yellow</option>
+                                    <option value="purple">🟣 Purple</option>
+                                    <option value="cyan">💠 Cyan</option>
+                                    <option value="white">⚪ White</option>
+                                    <option value="custom">🎨 Custom</option>
+                                </select>
+                                <input type="color" id="maskCustomColor" value="#00ff88" style="display:none; height:24px; padding:0; border:none; margin-left:5px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Previews -->
+                    <div class="settings-section" style="border-bottom:none;">
+                        <h3 class="section-title">🔍 Previews</h3>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                            <div style="background:rgba(0,0,0,0.3); border-radius:var(--radius-md); padding:10px; text-align:center;">
+                                <span style="font-size:0.75rem; color:var(--text-secondary);">Mouth Mask</span>
+                                <canvas id="maskPreviewMouth" width="160" height="90" style="width:100%; height:auto; margin-top:5px; border-radius:4px;"></canvas>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3); border-radius:var(--radius-md); padding:10px; text-align:center;">
+                                <span style="font-size:0.75rem; color:var(--text-secondary);">Effect Demo</span>
+                                <canvas id="maskPreviewEffect" width="160" height="90" style="width:100%; height:auto; margin-top:5px; border-radius:4px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="det-perf-badge" id="maskPerfBadge" style="display:none;">⚡ Ready</div>
+        </div>
+    </section>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 7: Performance Controls Module                         -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="modulePerformance">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">⚡</span> Performance Controls</h1>
+            <p class="hero-subtitle">Frame Timing Controller, Buffer Management, and Smart Drop Strategy.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="main-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Live Performance Feed -->
+                <div class="card card-swap-output" style="display: flex; flex-direction: column;">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📹</span> Live Performance Feed</h2>
+                    </div>
+                    <div class="video-container" id="perfLiveContainer" style="flex:1;">
+                        <canvas id="perfLiveCanvas"></canvas>
+                        <div class="video-placeholder" id="perfPlaceholder">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><path d="M20 24a8 8 0 0116 0" stroke="currentColor" stroke-width="2" opacity="0.3" stroke-linecap="round"/><path d="M36 24l4-4m0 0l-4-4m4 4H24" stroke="currentColor" stroke-width="1.5" opacity="0.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <p>Camera Stopped</p>
+                        </div>
+                    </div>
+                    <div class="controls-bar" style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="perfStartBtn" style="flex:1;">▶️ Start</button>
+                        <button class="btn btn-ghost" id="perfStopBtn" style="flex:1;" disabled>⏹️ Stop</button>
+                        <button class="btn btn-ghost" id="perfResetBtn" style="flex:1;">🔄 Reset Stats</button>
+                    </div>
+                </div>
+
+                <!-- Performance Configuration -->
+                <div class="card card-swap-ctrl">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Configuration</h2>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">⏱️ Frame Timing</h3>
+                        <div class="cam-ctrl-group" style="margin-bottom:10px;">
+                            <label>Target FPS</label>
+                            <select id="perfTargetFps">
+                                <option value="0">Unlimited</option>
+                                <option value="60">60 FPS</option>
+                                <option value="30" selected>30 FPS</option>
+                                <option value="24">24 FPS</option>
+                                <option value="15">15 FPS</option>
+                                <option value="10">10 FPS</option>
+                                <option value="5">5 FPS</option>
+                            </select>
+                        </div>
+                        <div class="cam-ctrl-group">
+                            <label>Performance Mode</label>
+                            <select id="perfMode">
+                                <option value="quality">Quality Priority</option>
+                                <option value="balanced" selected>Balanced</option>
+                                <option value="performance">Performance Priority</option>
+                                <option value="power_saver">Power Saver</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">💾 Buffer Management</h3>
+                        <div class="swap-slider-group" style="margin-bottom:10px;">
+                            <label>Keep Frames (Size)</label>
+                            <input type="range" id="perfBufferSize" min="1" max="60" value="10" class="swap-slider">
+                            <span class="swap-slider-val" id="perfBufferSizeVal">10</span>
+                        </div>
+                        <div class="cam-ctrl-group">
+                            <label>Drop Strategy</label>
+                            <select id="perfDropStrategy">
+                                <option value="oldest">Drop Oldest First</option>
+                                <option value="newest">Drop Newest First</option>
+                                <option value="smart" selected>Smart (Quality-based)</option>
+                                <option value="uniform">Uniform Sampling</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section" style="border-bottom:none;">
+                        <h3 class="section-title">👀 Overlays</h3>
+                        <button class="btn btn-ghost" id="perfToggleOverlayBtn" style="width:100%; border:1px solid var(--border-subtle);">🔴 FPS Overlay Hidden</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Dashboard -->
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h2><span class="card-icon">📊</span> Statistics Dashboard</h2>
+                </div>
+                
+                <div class="perf-stats-grid" style="margin-top:10px;">
+                    <div class="perf-stat-card"><div class="val" id="valCurrentFps">0</div><div class="lbl">Current FPS</div><div class="trend" id="trendCurrentFps">—</div></div>
+                    <div class="perf-stat-card"><div class="val" id="valAvgFps">0</div><div class="lbl">Average FPS</div><div class="trend" id="trendAvgFps">—</div></div>
+                    <div class="perf-stat-card"><div class="val" id="valFrameTime">0</div><div class="lbl">Frame Time (ms)</div><div class="trend" id="trendFrameTime">—</div></div>
+                    <div class="perf-stat-card"><div class="val" id="valDropped">0</div><div class="lbl">Dropped Frames</div><div class="trend" id="trendDropped">0%</div></div>
+                    
+                    <div class="perf-stat-card"><div class="val" id="valBufferUsage">0</div><div class="lbl">Buffer Usage</div><div class="trend" id="trendBufferUsage">0%</div></div>
+                    <div class="perf-stat-card"><div class="val" id="valProcessed">0</div><div class="lbl">Processed Frames</div><div class="trend" id="trendProcessed">—</div></div>
+                    <div class="perf-stat-card"><div class="val" id="valCpuLoad">0</div><div class="lbl">CPU Load (%)</div><div class="trend" id="trendCpuLoad">—</div></div>
+                    <div class="perf-stat-card"><div class="val" id="valLatency">0</div><div class="lbl">Latency (ms)</div><div class="trend" id="trendLatency">—</div></div>
+                </div>
+
+                <div class="perf-fps-graph" id="perfFpsGraph" style="margin-top:15px;"></div>
+                
+                <div class="perf-buffer-viz" style="margin-top:15px;">
+                    <strong style="font-size:0.85rem; color:var(--text-secondary);">Frame Buffer Status</strong>
+                    <div class="perf-buffer-slots" id="perfBufferSlots"></div>
+                </div>
+            </div>
+
+            <div class="det-perf-badge" id="perfBadgeIndicator" style="display:none;">⚡ Ready</div>
+        </div>
+    </section>
+
+    </section>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- MODULE 9: Multi-Face & Fixes Module                           -->
+    <!-- ============================================================ -->
+    <section class="module-panel" id="moduleMultiFace">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">👥</span> Multi-Face Tracking & Fixes</h1>
+            <p class="hero-subtitle">Simultaneous multi-face processing, tracking IDs, and white balance correction.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="main-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Live Multi-Face Feed -->
+                <div class="card card-swap-output" style="display:flex; flex-direction:column;">
+                    <div class="card-header">
+                        <h2><span class="card-icon">📹</span> Multi-Face Feed</h2>
+                    </div>
+                    <div class="video-preview-box" style="flex:1;">
+                        <canvas id="multiLiveCanvas" style="width:100%; height:100%; object-fit:contain; border-radius:var(--radius-md);"></canvas>
+                    </div>
+                    <div class="controls-bar" style="margin-top:15px; display:flex; gap:10px;">
+                        <button class="btn btn-primary" id="multiStartBtn" style="flex:1;">▶️ Start Feed</button>
+                        <button class="btn btn-ghost" id="multiStopBtn" style="flex:1;" disabled>⏹️ Stop</button>
+                        <button class="btn btn-ghost" id="multiResetBtn" style="flex:1;">🔄 Reset Tracking</button>
+                    </div>
+                    
+                    <div class="perf-stats-grid" style="margin-top:15px; grid-template-columns: repeat(4, 1fr);">
+                        <div class="perf-stat-card"><div class="val" id="multiFaceCount">0</div><div class="lbl">Faces Detected</div></div>
+                        <div class="perf-stat-card"><div class="val" id="multiTrackingFps">0</div><div class="lbl">Tracking FPS</div></div>
+                        <div class="perf-stat-card"><div class="val" id="multiProcessTime">0</div><div class="lbl">Process (ms)</div></div>
+                        <div class="perf-stat-card"><div class="val" id="multiColorStatus" style="font-size:1.2rem;">Off</div><div class="lbl">Color Correction</div></div>
+                    </div>
+                </div>
+
+                <!-- Fixes & Face List -->
+                <div class="card card-swap-ctrl">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Color Fixes & Config</h2>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">👥 Processing Mode</h3>
+                        <button class="btn btn-ghost" id="multiToggleBtn" style="width:100%; border:1px solid var(--border-subtle);">🔴 Single Face Mode</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎨 White Balance Correction</h3>
+                        <button class="btn btn-ghost" id="multiColorBtn" style="width:100%; border:1px solid var(--border-subtle); margin-bottom:10px;">🔴 Correction Disabled</button>
+                        
+                        <div class="swap-slider-group">
+                            <label>Color Temperature</label>
+                            <input type="range" id="multiTempSlider" min="2000" max="10000" value="5500" class="swap-slider">
+                            <span class="swap-slider-val" id="multiTempVal">5500K</span>
+                        </div>
+                        
+                        <div class="swap-slider-group">
+                            <label>Blue Light Reduction (Fix Blueish Cams)</label>
+                            <input type="range" id="multiBlueSlider" min="0" max="100" value="0" class="swap-slider">
+                            <span class="swap-slider-val" id="multiBlueVal">0%</span>
+                        </div>
+
+                        <div class="cam-ctrl-group" style="margin-top:10px;">
+                            <label>Algorithm Mode</label>
+                            <select id="multiWbMode">
+                                <option value="manual" selected>Manual Temperature</option>
+                                <option value="auto">Auto White Balance</option>
+                                <option value="grayworld">Gray World</option>
+                                <option value="histogram">Histogram Matching</option>
+                            </select>
+                        </div>
+                        
+                        <div style="display:flex; gap:10px; margin-top:15px; background:rgba(0,0,0,0.3); padding:10px; border-radius:var(--radius-sm);">
+                            <div style="flex:1; text-align:center;">
+                                <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:5px;">Original</div>
+                                <canvas id="multiWbOrig" style="width:100%; height:40px; background:#000; border-radius:4px;"></canvas>
+                            </div>
+                            <div style="flex:1; text-align:center;">
+                                <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:5px;">Corrected</div>
+                                <canvas id="multiWbCorr" style="width:100%; height:40px; background:#000; border-radius:4px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Face Tracker Array -->
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header">
+                    <h2><span class="card-icon">🆔</span> Face Tracking Array</h2>
+                </div>
+                <div id="multiFaceList" class="face-tracker-grid" style="margin-top:10px;">
+                    <div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--text-secondary);">No faces detected. Start the feed to track faces.</div>
+                </div>
+            </div>
+
+            <div class="det-perf-badge" id="multiBadgeIndicator" style="display:none;">⚡ Ready</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="module-panel" id="moduleAudio">
+        <div class="hero">
+            <h1 class="hero-title"><span class="hero-emoji">🎤</span> Audio Handling Module</h1>
+            <p class="hero-subtitle">Web Audio API integration, mic preservation, visualizers, and recording.</p>
+        </div>
+
+        <div class="main-container">
+            <div class="main-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Audio Visualizer & Preview -->
+                <div class="card card-swap-output" style="display:flex; flex-direction:column;">
+                    <div class="card-header">
+                        <h2><span class="card-icon">🌊</span> Audio Visualizer</h2>
+                    </div>
+                    
+                    <div class="audio-visualizer" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                            <span style="color:var(--text-secondary); font-size:0.85rem;">Frequency Graph</span>
+                            <span id="audioStatusVal" style="color:var(--error); font-size:0.85rem; font-weight:bold;">No Audio</span>
+                        </div>
+                        <canvas id="audioVisualizerCanvas" class="visualizer-canvas"></canvas>
+                        
+                        <div style="margin-top:20px;">
+                            <span style="color:var(--text-secondary); font-size:0.85rem;">Input Level (dB)</span>
+                            <div class="audio-level-bar">
+                                <div class="audio-level-fill" id="audioLevelFill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls-bar" style="margin-top:15px; display:flex; gap:10px;">
+                        <button class="btn btn-primary" id="audioRecordStartBtn" style="flex:1;" disabled>🔴 Start Record</button>
+                        <button class="btn btn-ghost" id="audioRecordStopBtn" style="flex:1;" disabled>⏹️ Stop</button>
+                        <button class="btn btn-ghost" id="audioPlaybackBtn" style="flex:1;" disabled>▶️ Playback</button>
+                    </div>
+                </div>
+
+                <!-- Audio Configuration -->
+                <div class="card card-swap-ctrl">
+                    <div class="card-header">
+                        <h2><span class="card-icon">⚙️</span> Configuration</h2>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎤 Input Device</h3>
+                        <div class="cam-ctrl-group" style="margin-bottom:10px;">
+                            <label>Microphone</label>
+                            <select id="audioMicSelect">
+                                <option value="">Loading microphones...</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-ghost" id="audioToggleBtn" style="width:100%; border:1px solid var(--border-subtle);">🔴 Audio Disabled</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="section-title">🎚️ Tuners & Filters</h3>
+                        <div class="swap-slider-group">
+                            <label>Input Volume Gain</label>
+                            <input type="range" id="audioVolumeSlider" min="0" max="200" value="100" class="swap-slider">
+                            <span class="swap-slider-val" id="audioVolumeVal">100%</span>
+                        </div>
+                        
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <div class="cam-ctrl-group" style="flex:1;">
+                                <label>Noise Suppression</label>
+                                <select id="audioNoiseSupp">
+                                    <option value="none">None</option>
+                                    <option value="mild" selected>Mild</option>
+                                    <option value="aggressive">Aggressive</option>
+                                </select>
+                            </div>
+                            <div class="cam-ctrl-group" style="flex:1;">
+                                <label>Audio Quality</label>
+                                <select id="audioQualityMode">
+                                    <option value="low">8kHz</option>
+                                    <option value="medium" selected>16kHz</option>
+                                    <option value="high">44.1kHz</option>
+                                    <option value="studio">48kHz</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:10px;">
+                            <button class="btn btn-ghost" id="audioEchoBtn" style="width:100%; border:1px solid var(--border-subtle);">🔴 Echo Cancellation Off</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Dashboard -->
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h2><span class="card-icon">📊</span> Audio Statistics</h2>
+                </div>
+                
+                <div class="perf-stats-grid" style="margin-top:10px; grid-template-columns: repeat(6, 1fr);">
+                    <div class="perf-stat-card"><div class="val" id="statAudioLevel">0</div><div class="lbl">Level (dB)</div></div>
+                    <div class="perf-stat-card"><div class="val" id="statSampleRate">0</div><div class="lbl">Sample Rate</div></div>
+                    <div class="perf-stat-card"><div class="val" id="statBufferSize">0</div><div class="lbl">Buffer Size</div></div>
+                    <div class="perf-stat-card"><div class="val" id="statLatency">0</div><div class="lbl">Latency (ms)</div></div>
+                    <div class="perf-stat-card"><div class="val" id="statRecTime">0</div><div class="lbl">Recording (s)</div></div>
+                    <div class="perf-stat-card"><div class="val" id="statAudioFrames">0</div><div class="lbl">Audio Frames</div></div>
+                </div>
+            </div>
+
+            <div class="det-perf-badge" id="audioBadgeIndicator" style="display:none;">⚡ Ready</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>Clonemax &copy; 2026 — Face Cloning Application</p>
+    </footer>
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- App modules -->
+    <script src="app.js"></script>
+    <script src="camera.js"></script>
+    <script src="detection.js"></script>
+    <script src="swapping.js"></script>
+    <script src="enhancer.js"></script>
+    <script src="mask.js"></script>
+    <script src="performance.js"></script>
+    <script src="audio.js"></script>
+    <script src="multi_face.js"></script>
+</body>
+</html>
