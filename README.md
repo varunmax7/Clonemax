@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 🎭 Clonemax — Real-Time Face Cloning Engine
 
@@ -26,21 +26,12 @@
 - [Tech Stack](#-tech-stack)
 - [Architecture](#-architecture)
 - [Module Documentation](#-module-documentation)
-  - [Module 1 — Face Reference Input](#module-1--face-reference-input)
-  - [Module 2 — Live Camera](#module-2--live-camera)
-  - [Module 3 — Face Detection](#module-3--face-detection)
-  - [Module 4 — Face Swapping Engine](#module-4--face-swapping--cloning-engine)
-  - [Module 5 — Face Enhancer](#module-5--face-enhancer)
-  - [Module 6 — Mask Options](#module-6--mask-options)
-  - [Module 7 — Performance Controls](#module-7--performance-controls)
-  - [Module 8 — Audio Handling](#module-8--audio-handling)
-  - [Module 9 — Multi-Face & Fixes](#module-9--multi-face--fixes)
 - [Processing Pipeline](#-processing-pipeline)
-- [How to Run](#-how-to-run)
+- [How to Run](#️-how-to-run)
 - [Project Structure](#-project-structure)
 - [Key Algorithms](#-key-algorithms)
 - [Browser Compatibility](#-browser-compatibility)
-- [Known Limitations](#-known-limitations)
+- [Known Limitations](#️-known-limitations)
 - [Future Roadmap](#-future-roadmap)
 - [License](#-license)
 
@@ -64,7 +55,7 @@ This creates a massive accessibility barrier. Content creators, educators, VFX a
 We achieve this through:
 
 | Challenge | Our Approach |
-|---|---|
+|:---|:---|
 | GPU dependency | Pure JavaScript pixel manipulation on HTML5 Canvas |
 | Complex setup | Single `index.html` — open and go |
 | Model downloads | CDN-hosted MediaPipe Face Mesh (loads on demand) |
@@ -106,7 +97,7 @@ Live Camera → Frame Capture → Face Detection → 468 Landmarks → Affine Wa
 ### Core Technologies
 
 | Layer | Technology | Purpose |
-|---|---|---|
+|:---|:---|:---|
 | **Structure** | HTML5 | Semantic SPA layout with 9 tabbed modules |
 | **Styling** | CSS3 (Vanilla) | Ambient dark-mode design system with CSS variables |
 | **Logic** | JavaScript ES2022 | IIFE-encapsulated modular architecture |
@@ -115,7 +106,7 @@ Live Camera → Frame Capture → Face Detection → 468 Landmarks → Affine Wa
 ### AI & Computer Vision
 
 | Library | Version | Purpose |
-|---|---|---|
+|:---|:---|:---|
 | **MediaPipe Face Mesh** | `@mediapipe/face_mesh` | 468-point facial landmark detection |
 | **MediaPipe Camera Utils** | `@mediapipe/camera_utils` | WebRTC camera frame pipeline |
 | **face-api.js** | `@vladmandic/face-api` | SSD MobileNet face detection + 68-point landmarks |
@@ -123,7 +114,7 @@ Live Camera → Frame Capture → Face Detection → 468 Landmarks → Affine Wa
 ### Web APIs
 
 | API | Purpose |
-|---|---|
+|:---|:---|
 | `navigator.mediaDevices.getUserMedia()` | WebRTC camera access |
 | `Canvas 2D API` | Pixel-level image manipulation |
 | `Web Audio API` | Microphone capture, FFT analysis, noise suppression |
@@ -134,7 +125,7 @@ Live Camera → Frame Capture → Face Detection → 468 Landmarks → Affine Wa
 ### Algorithms (Custom Implementation)
 
 | Algorithm | Used In |
-|---|---|
+|:---|:---|
 | Bowyer-Watson Delaunay Triangulation | Triangle mesh generation |
 | Affine Transformation (2×3 matrix) | Per-triangle warping |
 | Bilinear Interpolation | Sub-pixel texture sampling |
@@ -204,7 +195,7 @@ All styling uses a centralized variable system for the "Ambient Dark" theme:
 **File:** `app.js` (585 lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | Image Upload | Drag & drop + click-to-upload with file validation |
 | Format Support | JPG, PNG, WEBP, BMP (max 10 MB) |
 | Face Detection | `face-api.js` SSD MobileNet v1 |
@@ -215,6 +206,7 @@ All styling uses a centralized variable system for the "Ambient Dark" theme:
 | Reference Export | Saves to `localStorage` for cross-module use |
 
 **Quality Check Pipeline:**
+
 1. **Face Size** — Minimum 100×100 px (warning below 200×200)
 2. **Centering** — Face center offset from image center (< 30%)
 3. **Head Tilt** — Eye-line angle calculation (< 15° acceptable)
@@ -229,7 +221,7 @@ All styling uses a centralized variable system for the "Ambient Dark" theme:
 **File:** `camera.js` (450+ lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | Camera Access | `getUserMedia()` with fallback handling |
 | Device Selection | Enumerates all video input devices |
 | Resolution Options | 480p, 720p, 1080p, 4K presets |
@@ -246,7 +238,7 @@ All styling uses a centralized variable system for the "Ambient Dark" theme:
 **File:** `detection.js` (600+ lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | Dual Engine | MediaPipe Face Mesh (468 pts) + face-api.js (68 pts) |
 | Engine Switching | Toggle between engines at runtime |
 | Live Detection | Real-time bounding box + landmark overlay |
@@ -255,6 +247,7 @@ All styling uses a centralized variable system for the "Ambient Dark" theme:
 | Confidence Scoring | Per-face detection confidence display |
 
 **MediaPipe Configuration:**
+
 ```javascript
 faceMesh.setOptions({
     maxNumFaces: 1,
@@ -277,7 +270,7 @@ This is the heart of Clonemax. It implements the complete face-swap pipeline:
 The engine divides the face into ~900 micro-triangles using the Bowyer-Watson incremental algorithm:
 
 ```
-Input: 468 landmark points
+Input:  468 landmark points
 Output: ~918 non-overlapping triangles covering the face
 ```
 
@@ -288,9 +281,9 @@ The triangulation is **computed once** when the reference face is detected, and 
 For each triangle, a 2×3 affine transformation matrix maps source → destination coordinates:
 
 ```
-| a  b  c |     | x |     | x' |
-| d  e  f |  ×  | y |  =  | y' |
-                | 1 |
+| a  b  c |       | x |       | x' |
+| d  e  f |   ×   | y |   =   | y' |
+                   | 1 |
 ```
 
 Each pixel inside a destination triangle is reverse-mapped to the source image using **bilinear interpolation** (sampling 4 neighboring pixels) instead of nearest-neighbor, eliminating pixelation artifacts.
@@ -300,9 +293,11 @@ Each pixel inside a destination triangle is reverse-mapped to the source image u
 After warping, the engine clips the result to MediaPipe's **FACE_OVAL** contour (36 landmark indices defining the outer face boundary). This prevents hair, ears, and background from bleeding into the output.
 
 ```javascript
-const FACE_OVAL = [10,338,297,332,284,251,389,356,454,323,361,
-                   288,397,365,379,378,400,377,152,148,176,149,
-                   150,136,172,58,132,93,234,127,162,21,54,103,67,109];
+const FACE_OVAL = [
+    10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288,
+    397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136,
+    172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109
+];
 ```
 
 #### 4.4 Laplacian High-Pass Color Transfer
@@ -334,7 +329,7 @@ Raw Mask → Morphological Erosion (r=3) → Separable Gaussian Blur (r=30) → 
 **File:** `enhancer.js` (500+ lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | GPEN Simulation | Bilateral filter + contrast enhancement (256/512 modes) |
 | GFPGAN Simulation | Multi-pass sharpening with edge preservation |
 | CodeFormer Simulation | Adaptive detail recovery with fidelity control |
@@ -351,7 +346,7 @@ Raw Mask → Morphological Erosion (r=3) → Separable Gaussian Blur (r=30) → 
 **File:** `mask.js` (293 lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | Mouth Mask | Binary mask from mouth contour landmarks |
 | Eye Mask | Bilateral eye region masking |
 | Face Outline | Full jawline contour overlay |
@@ -368,7 +363,7 @@ Raw Mask → Morphological Erosion (r=3) → Separable Gaussian Blur (r=30) → 
 **File:** `performance.js` (350+ lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | FPS Limiter | `requestAnimationFrame` throttle (1–60 FPS) |
 | Frame Buffer | Configurable buffer size with drop strategy |
 | Drop Strategy | Oldest-first, newest-first, or random frame dropping |
@@ -384,7 +379,7 @@ Raw Mask → Morphological Erosion (r=3) → Separable Gaussian Blur (r=30) → 
 **File:** `audio.js` (300+ lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | Mic Capture | `getUserMedia({ audio: true })` |
 | Audio Visualization | Real-time FFT waveform + frequency bars |
 | Noise Suppression | Web Audio `BiquadFilterNode` (low-pass + high-pass) |
@@ -400,7 +395,7 @@ Raw Mask → Morphological Erosion (r=3) → Separable Gaussian Blur (r=30) → 
 **File:** `multi_face.js` (400+ lines)
 
 | Feature | Implementation |
-|---|---|
+|:---|:---|
 | Multi-Face Detection | MediaPipe `maxNumFaces: 10` |
 | Face Tracking Array | Euclidean distance-based ID persistence |
 | Individual Processing | Per-face bounding box, landmarks, confidence |
@@ -411,6 +406,7 @@ Raw Mask → Morphological Erosion (r=3) → Separable Gaussian Blur (r=30) → 
 | Face Selection | Click-to-select individual tracked faces |
 
 **Tracking Algorithm:**
+
 ```
 For each detected face:
   1. Compute center point (cx, cy)
@@ -425,49 +421,48 @@ For each detected face:
 ## 🔄 Processing Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    CLONEMAX PIPELINE                        │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌──────────┐    ┌──────────────┐    ┌──────────────────┐   │
-│  │ Reference │───▶│ MediaPipe    │───▶│ 468 Landmarks    │   │
-│  │ Image     │    │ Face Mesh    │    │ (cached)         │   │
-│  └──────────┘    └──────────────┘    └────────┬─────────┘   │
-│                                               │             │
-│                                    ┌──────────▼─────────┐   │
-│                                    │ Delaunay Triangul.  │   │
-│                                    │ (~918 triangles)    │   │
-│                                    │ (cached indices)    │   │
-│                                    └──────────┬─────────┘   │
-│                                               │             │
-│  ┌──────────┐    ┌──────────────┐    ┌────────▼─────────┐   │
-│  │ Live     │───▶│ MediaPipe    │───▶│ Affine Warp      │   │
-│  │ Camera   │    │ Face Mesh    │    │ (bilinear interp) │   │
-│  │ Frame    │    │ (per-frame)  │    └────────┬─────────┘   │
-│  └──────────┘    └──────────────┘             │             │
-│                                    ┌──────────▼─────────┐   │
-│                                    │ Face Oval Mask     │   │
-│                                    │ (convex hull clip) │   │
-│                                    └────────┬───────────┘   │
-│                                             │               │
-│                                  ┌──────────▼─────────┐     │
-│                                  │ Laplacian Color    │     │
-│                                  │ Transfer           │     │
-│                                  │ (high-pass blend)  │     │
-│                                  └────────┬───────────┘     │
-│                                           │                 │
-│                                ┌──────────▼─────────┐       │
-│                                │ Feather Blend      │       │
-│                                │ erode → blur →     │       │
-│                                │ alpha composite    │       │
-│                                └────────┬───────────┘       │
-│                                         │                   │
-│                              ┌──────────▼─────────┐         │
-│                              │   Final Output     │         │
-│                              │   (Canvas)         │         │
-│                              └────────────────────┘         │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                      CLONEMAX PIPELINE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────────┐   ┌────────────────┐   ┌──────────────────┐  │
+│  │  Reference   │──▶│  MediaPipe     │──▶│  468 Landmarks   │  │
+│  │  Image       │   │  Face Mesh     │   │  (cached)        │  │
+│  └──────────────┘   └────────────────┘   └────────┬─────────┘  │
+│                                                   │            │
+│                                        ┌──────────▼─────────┐  │
+│                                        │ Delaunay Triangul.  │  │
+│                                        │ (~918 triangles)    │  │
+│                                        │ (cached indices)    │  │
+│                                        └──────────┬─────────┘  │
+│                                                   │            │
+│  ┌──────────────┐   ┌────────────────┐   ┌────────▼─────────┐  │
+│  │  Live        │──▶│  MediaPipe     │──▶│  Affine Warp     │  │
+│  │  Camera      │   │  Face Mesh     │   │  (bilinear)      │  │
+│  │  Frame       │   │  (per-frame)   │   └────────┬─────────┘  │
+│  └──────────────┘   └────────────────┘            │            │
+│                                        ┌──────────▼─────────┐  │
+│                                        │  Face Oval Mask    │  │
+│                                        │  (convex hull)     │  │
+│                                        └──────────┬─────────┘  │
+│                                                   │            │
+│                                        ┌──────────▼─────────┐  │
+│                                        │  Laplacian Color   │  │
+│                                        │  Transfer          │  │
+│                                        └──────────┬─────────┘  │
+│                                                   │            │
+│                                        ┌──────────▼─────────┐  │
+│                                        │  Feather Blend     │  │
+│                                        │  erode → blur →    │  │
+│                                        │  alpha composite   │  │
+│                                        └──────────┬─────────┘  │
+│                                                   │            │
+│                                        ┌──────────▼─────────┐  │
+│                                        │  Final Output      │  │
+│                                        │  (Canvas)          │  │
+│                                        └────────────────────┘  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -484,7 +479,7 @@ For each detected face:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/Clonemax.git
+git clone https://github.com/varunmax7/Clonemax.git
 cd Clonemax
 
 # 2. Start any local HTTP server:
@@ -516,7 +511,7 @@ open http://localhost:8080
 ### Important Settings for Best Results
 
 | Setting | Recommended Value |
-|---|---|
+|:---|:---|
 | Reference Photo | Well-lit, frontal face, 500×500 px minimum |
 | Opacity | 90–100% |
 | Blend Mode | Feather (auto-selected) |
@@ -531,8 +526,10 @@ open http://localhost:8080
 Clonemax/
 ├── index.html          # Single-page app shell (1157 lines)
 │                       # All 9 module panels, tab navigation, CDN imports
+│
 ├── styles.css          # Complete design system (1900+ lines)
 │                       # CSS variables, animations, glassmorphism, responsive
+│
 ├── app.js              # Module 1: Reference input, validation, quality checks
 ├── camera.js           # Module 2: WebRTC camera, device selection, capture
 ├── detection.js        # Module 3: Dual-engine face detection
@@ -542,10 +539,11 @@ Clonemax/
 ├── performance.js      # Module 7: FPS control, frame management
 ├── audio.js            # Module 8: Web Audio API, recording
 ├── multi_face.js       # Module 9: Multi-face tracking, white balance
-└── README.md           # This file
+│
+└── README.md           # This documentation
 ```
 
-**Total codebase:** ~11 files, ~267 KB, ~5,500 lines of code
+**Total codebase:** 12 files · ~267 KB · ~5,500 lines of code
 
 ---
 
@@ -568,8 +566,8 @@ Incrementally inserts each landmark point into an existing triangulation:
 For a source coordinate (sx, sy) that falls between integer pixel positions:
 
 ```
-f(x,y) = f(0,0)(1-fx)(1-fy) + f(1,0)(fx)(1-fy)
-       + f(0,1)(1-fx)(fy)   + f(1,1)(fx)(fy)
+f(x,y) = f(0,0)·(1-fx)·(1-fy) + f(1,0)·(fx)·(1-fy)
+       + f(0,1)·(1-fx)·(fy)   + f(1,1)·(fx)·(fy)
 ```
 
 Where `fx = sx - floor(sx)` and `fy = sy - floor(sy)`.
@@ -590,13 +588,13 @@ This preserves reference face detail (texture, features) while adopting live lig
 ## 🌐 Browser Compatibility
 
 | Browser | Version | Status |
-|---|---|---|
+|:---|:---|:---|
 | Google Chrome | 90+ | ✅ Full support |
 | Microsoft Edge | 90+ | ✅ Full support |
 | Mozilla Firefox | 88+ | ✅ Full support |
 | Safari | 15+ | ⚠️ WebRTC permissions may require HTTPS |
 | Chrome Android | 90+ | ⚠️ Performance depends on device |
-| Safari iOS | 15+ | ⚠️ Limited `getUserMedia` support |
+| Safari iOS | 15+ | ⚠️ Limited getUserMedia support |
 
 > **Note:** HTTPS is required for camera access on most mobile browsers.
 
@@ -620,7 +618,7 @@ This preserves reference face detail (texture, features) while adopting live lig
 - [ ] **Temporal Smoothing** — Kalman filter on landmarks to reduce jitter
 - [ ] **Expression Transfer** — Map reference expression to live face (not just texture)
 - [ ] **Video File Input** — Swap faces in uploaded video files (not just live camera)
-- [ ] **Preset System** — Save/load swap configurations via `localStorage`
+- [ ] **Preset System** — Save/load swap configurations via localStorage
 - [ ] **PWA Support** — Installable as a Progressive Web App
 
 ---
@@ -658,4 +656,3 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 *No Python. No GPU. No installation. Just open and clone.*
 
 </div>
-]]>
